@@ -40,15 +40,19 @@ class CognitoAuthenticator extends AbstractAuthenticator
         $username = $request->request->get('email');
         $password = $request->request->get('password');
 
-        $result = $this->client->initiateAuth([
-            'AuthFlow' => 'USER_PASSWORD_AUTH',
-            'ClientId' => $this->clientId,
-            'UserPoolId' => $this->userPoolId,
-            'AuthParameters' => [
-                'USERNAME' => $username,
-                'PASSWORD' => $password,
-            ],
-        ]);
+        try {
+            $result = $this->client->initiateAuth([
+                'AuthFlow' => 'USER_PASSWORD_AUTH',
+                'ClientId' => $this->clientId,
+                'UserPoolId' => $this->userPoolId,
+                'AuthParameters' => [
+                    'USERNAME' => $username,
+                    'PASSWORD' => $password,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            throw new CustomUserMessageAuthenticationException('Invalid credentials.');
+        }
 
         if (!$result->hasKey('AuthenticationResult') || !$result->get('AuthenticationResult')['AccessToken']) {
             throw new CustomUserMessageAuthenticationException('Invalid credentials.');

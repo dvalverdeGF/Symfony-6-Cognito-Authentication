@@ -26,7 +26,11 @@ services:
     App\Security\UserProvider:
         class: App\Security\UserProvider
         arguments: ['@Aws\CognitoIdentityProvider\CognitoIdentityProviderClient', '%env(COGNITO_POOL_ID)%']
-        
+    
+    App\Security\CognitoResetPassword:
+        class: App\Security\CognitoResetPassword
+        arguments: [ '@Aws\CognitoIdentityProvider\CognitoIdentityProviderClient', '%env(COGNITO_CLIENT_ID)%' ]
+    
     Aws\CognitoIdentityProvider\CognitoIdentityProviderClient:
         class: Aws\CognitoIdentityProvider\CognitoIdentityProviderClient
         arguments:
